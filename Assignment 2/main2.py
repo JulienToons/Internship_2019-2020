@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import math
+from scipy.signal import find_peaks as find_peaks
 
 # returns the needed value (row like intensity or ppm) from an index (column) in the excel sheet
 toNum = lambda entry, ver=0: float(entry[0].split(",")[ver])
@@ -57,7 +58,7 @@ for line in references:
 for line in references:
     if toNum(data[line['start']], 0) == 50: # plot peaks for only the desired lines/data
         peakValues = []
-
+        '''
         # 1. g(x) = Sum from -alpha to alpha of f(x + d)*h(d)*delta(d)
         for i in range(line['start'], line['end']):
             temp_x = toNum(data[i],x_index)
@@ -92,7 +93,7 @@ for line in references:
 
             peakValues.append(value)
 
-            '''
+            """
             #### print(leftIndex-rightIndex)
             #### print()
 
@@ -113,7 +114,7 @@ for line in references:
             if (a<0 and  left <= -b/(2*a) <= right):
                 # DEBUGGER: print("ADDED")
                 peaks.append(i)                       # ******** maybe store x coordinate & y instead of the index???
-            '''
+            """
 
         peaks = []
 
@@ -121,7 +122,7 @@ for line in references:
         for i in range(len(peakValues)):
             if(peakValues[i] >= peak_qualifier):
                 peaks.append(line['start'] + i)
-
+        '''
         # 3. 'Merge' almost-repetitive (close x values) list of peaks
         '''
         finalPeaks = []
@@ -143,10 +144,17 @@ for line in references:
             finalPeaks.append(peaks[temp[0]])
         # DEBUGGER: print(peaks)
         '''
-
+        peaks,_ = find_peaks(#list(map(lambda el: toNum(el, x_index), data[line['start']:line['end']])),
+                           list(map(lambda el: toNum(el, y_index), data[line['start']:line['end']])),
+                            prominence = .35)
+        print(peaks)
+        color = [.2,.8,.9]
         # 4. Plot the peaks
+        plt.plot(toNum(data[line['start']], x_index),
+                 toNum(data[line['start']], y_index), "*", color=color)
         for peak_index in peaks:
-            plt.plot(toNum(data[peak_index], x_index), toNum(data[peak_index], y_index), "*y")
+            plt.plot(toNum(data[peak_index + line['start']], x_index),
+                     toNum(data[peak_index+ line['start']], y_index), "*", color = color)
 
 
 # ========================  LABEL GRAPH ========================
