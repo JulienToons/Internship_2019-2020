@@ -6,6 +6,7 @@ Julien Owhadi
 
 # ======================== IMPORT LIBRARIES ========================
 import matplotlib.pyplot as plt
+from statistics import mean
 import numpy as np
 import csv
 import math
@@ -88,7 +89,7 @@ ax1.set_yscale('log')
 plt.show()
 
 # ========================  CREATE GRAPH 2 ========================
-numberOfPeaksShown = 2
+'''numberOfPeaksShown = 2
 
 for i in range(numberOfPeaksShown):
     temp_label = "Peak " + str(i) if (i == 0) else "Plateau"
@@ -110,6 +111,27 @@ for i in range(numberOfPeaksShown):
         print(temp_xaxis)
         print(I_by_peak)
         ax2[0].plot(temp_xaxis, I_by_peak,label=temp_label)
+'''
+def best_fit_slope_and_intercept(xs, ys):
+    m = (((mean(xs) * mean(ys)) - mean(xs * ys)) /
+         ((mean(xs) * mean(xs)) - mean(xs * xs)))
+
+    b = mean(ys) - m * mean(xs)
+
+    return m, b
+def abline(slope, intercept):
+    """Plot a line from slope and intercept"""
+    axes = plt.gca()
+    x_vals = np.array(axes.get_xlim())
+    y_vals = intercept + slope * x_vals
+    ax2[0].plot(x_vals, y_vals, '--')
+
+for (i in range(peaks)):
+    value=map(lambda x:x[i], peaks)
+    # plt.plot(concentrations, value)
+
+    m, b = best_fit_slope_and_intercept(concentration, value)
+    abline(m,b)
 
 ax2[0].set_xlabel('Concentration (ppm)')
 ax2[0].set_ylabel('Intensity [a.u.]\n(mean background-subtracted)')
