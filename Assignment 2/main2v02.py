@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import math
+from statistics import mean
 from scipy.signal import find_peaks
 
 # ======================== CREATE VARIABLES & FUNCTIONS ========================
@@ -85,7 +86,7 @@ ax1.legend()
 
 ax1.set_xscale('log')
 ax1.set_yscale('log')
-plt.show()
+#plt.show()
 
 # ========================  CREATE GRAPH 2 ========================
 numberOfPeaksShown = 2
